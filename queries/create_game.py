@@ -19,7 +19,7 @@ def create_game(cur):
     game_id = cur.fetchone()[0]
 
     # insert board
-    cur.execute("INSERT INTO board (game_id) VALUES (%s) RETURNING id", (game_id))
+    cur.execute("INSERT INTO board (game_id) VALUES (%s) RETURNING id", (game_id,))
     board_id = cur.fetchone()[0]
 
     # insert tiles
