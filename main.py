@@ -3,9 +3,16 @@
 
 import psycopg2
 
-conn = psycopg2.connect("dbname=catan_db user=catan_user password=catan_user port=5432 host=roller.cse.taylor.edu")
-cur = conn.cursor()
+print("Connecting to database...")
+connection = psycopg2.connect("dbname=catan_db user=catan_user password=catan_user port=5432 host=roller.cse.taylor.edu")
+cursor = connection.cursor()
+print("Connected")
 
-cur.execute("SELECT * FROM game")
+cursor.execute("SELECT * FROM game")
 
-print(cur.fetchall())
+print(cursor.fetchall())
+
+
+cursor.close()
+connection.close()
+print("PostgreSQL connection is closed")
