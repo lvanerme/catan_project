@@ -1,15 +1,4 @@
-import psycopg2
 import random
-
-
-def main():
-    conn = psycopg2.connect("dbname=catan_db user=catan_user password=catan_user port=5432 host=roller.cse.taylor.edu")
-    cur = conn.cursor()
-
-    create_game(cur)
-
-    conn.commit()
-    cur.close()
 
 
 def create_game(cur):
@@ -143,6 +132,4 @@ def _get_hand_values(player_ids: list):
 def _get_port_values(board_id):
     pass
 
-
-main()
 
