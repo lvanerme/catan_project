@@ -1,7 +1,7 @@
 import random
 
 
-def create_game(cur):
+def create_game(cur, conn) -> int:
 
     # insert into game
     cur.execute("INSERT INTO game (status) VALUES (true) RETURNING id")
@@ -22,10 +22,9 @@ def create_game(cur):
     dev_card_args = ','.join(cur.mogrify("(%s,%s,%s,%s)", i).decode('utf-8') for i in dev_card_values)
     cur.execute(f"INSERT INTO dev_card (hand_id, type, active, game_id) VALUES {dev_card_args}")
 
-    # insert ports
-    port_values = _get_port_values(board_id)
+    conn.commit()
 
-    return cur
+    return game_id
 
 
 def _get_tile_values(board_id) -> list:
@@ -85,7 +84,7 @@ def _insert_player_values(cur, game_id):
     # insert piece_count
     piece_count_values = _get_piece_count_values(player_ids)
     piece_count_args = ','.join(cur.mogrify("(%s,%s,%s,%s)", i).decode('utf-8') for i in piece_count_values)
-    cur.execute(f"INSERT INTO piece_count (player_id, settlements, cities, roads) VALUES {piece_count_args}")
+    cur.execute(f"INSERT INTO piece_count (player_id, settlement, city, road) VALUES {piece_count_args}")
 
     # insert hands
     hand_values = _get_hand_values(player_ids)
@@ -96,7 +95,7 @@ def _insert_player_values(cur, game_id):
 def _get_player_values():
     players = []
 
-    for i in range(0, 4):
+    for _ in range(0, 4):
         player = (0, False, 1, 0)
         players.append(player)
 
@@ -133,10 +132,6 @@ def _get_hand_values(player_ids: list):
     return hands
 
 
-def _get_port_values(board_id):
-    pass
-
-
 def _get_dev_card_values(game_id):
     dev_card_types = ['k','k','k','k','k','k','k','k','k','k','k','k','k','k','vp','vp','vp','vp','vp','rb','rb','yp','yp','m','m']
     dev_cards = []
@@ -146,8 +141,4 @@ def _get_dev_card_values(game_id):
         dev_cards.append(card)
 
     return dev_cards
-
-
-    
-
 

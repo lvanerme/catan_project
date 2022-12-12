@@ -2,10 +2,25 @@
 # Lance's pat for github ^
 
 import psycopg2
+from queries.create_game import create_game
 
 conn = psycopg2.connect("dbname=catan_db user=catan_user password=catan_user port=5432 host=roller.cse.taylor.edu")
 cur = conn.cursor()
 
-cur.execute("SELECT * FROM game")
+game_id = create_game(cur, conn)
+# place_initial_pieces()
+# players = get_players(game_id)
 
-print(cur.fetchall())
+player = 0
+while True:
+    # take_turn(game_id, players[player])
+    
+    # if check_win(game_id):
+        # break
+    
+    if player != 3:
+        player += 1
+    else:
+        player = 0
+
+# get_winner(game_id)
