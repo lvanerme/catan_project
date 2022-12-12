@@ -7,7 +7,7 @@ def main():
     cur = conn.cursor()
     
     ##needs to pipeline to take in unique input
-    resources = get_resources(cur, 1)
+    resources = get_resources(cur, 1, 9)
     print(resources)
     
     conn.commit()
@@ -15,14 +15,8 @@ def main():
 
 
 
-def get_resources(cur, p_id):
-    
-    cur.execute("""SELECT * FROM hand WHERE player_id = %s""", (p_id,))
-    r = cur.fetchall()[0]
-    result = str(r)
-    result = result[1:len(result)-1]
-    result = str(result).split(', ')
-    resources = {'player': result[1], 'brick': result[2], 'wood': result[3], 'wheat': result[4], 'ore': result[5], 'sheep': result[6]}
-    return resources
+def get_resources(cur, g_id, roll):
+    pass
+
 
 main()
