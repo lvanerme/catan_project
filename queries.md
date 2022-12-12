@@ -2,13 +2,17 @@
 
 ## Game Setup
 1. `create_game()`
-    1. `INSERT` `board`
-    1. `INSERT` 8 `port` entries, associate with `board`
-    1. `INSERT` 19 `tile` entries, associate with `board` and appropriate `port` entries
-        1. Randomize `tile.roll`
-    1. `INSERT` 4 `player` entries, associate with `board`
+    1. `INSERT game`
+    1. `INSERT board`, associate with `game`
+    1. `INSERT` 8 `port` entries
+    1. `INSERT` 19 `tile` entries, associate with `board`
+        1. Randomize `tile.number`
+    1. `INSERT INTO tile_port` with correct `port` and `tile` ids
+    1. `INSERT` 4 `player` entries
+    1. `INSERT INTO game_player` with appropriate `player_id` and `game_id` values
     1. `INSERT` 4 `hand` entries, associate with respective `player`
     1. `INSERT` 4 `piece_count` entries, associate with respective `player`
+    1. `INSERT` 25 `dev_card` entries with appropriate types, associated with `game.id`
 
 2. `place_initial_pieces()`
     1. `INSERT turn`, associate with first `player` and `board`
