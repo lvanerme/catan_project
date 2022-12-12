@@ -1,7 +1,5 @@
 import psycopg2
-import random
 
-##get the resources for a player
 def main():
     conn = psycopg2.connect("dbname=catan_db user=catan_user password=catan_user port=5432 host=roller.cse.taylor.edu")
     cur = conn.cursor()
