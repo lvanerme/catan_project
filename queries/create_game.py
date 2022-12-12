@@ -18,6 +18,10 @@ def create_game(cur):
 
     _insert_player_values(cur, game_id)
 
+    dev_card_values = _get_dev_card_values(game_id)
+    dev_card_args = ','.join(cur.mogrify("(%s,%s,%s,%s)", i).decode('utf-8') for i in dev_card_values)
+    cur.execute(f"INSERT INTO dev_card (hand_id, type, active, game_id) VALUES {dev_card_args}")
+
     # insert ports
     port_values = _get_port_values(board_id)
 
@@ -131,5 +135,19 @@ def _get_hand_values(player_ids: list):
 
 def _get_port_values(board_id):
     pass
+
+
+def _get_dev_card_values(game_id):
+    dev_card_types = ['k','k','k','k','k','k','k','k','k','k','k','k','k','k','vp','vp','vp','vp','vp','rb','rb','yp','yp','m','m']
+    dev_cards = []
+
+    for card_type in dev_card_types:
+        card = (-1, card_type, False, game_id)
+        dev_cards.append(card)
+
+    return dev_cards
+
+
+    
 
 

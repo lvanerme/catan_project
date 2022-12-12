@@ -12,6 +12,7 @@
     1. `INSERT INTO game_player` with appropriate `player_id` and `game_id` values
     1. `INSERT` 4 `hand` entries, associate with respective `player`
     1. `INSERT` 4 `piece_count` entries, associate with respective `player`
+    1. `INSERT` 25 `dev_card` entries with appropriate types, associated with `game.id`
 
 2. `place_initial_pieces()`
     1. `INSERT turn`, associate with first `player` and `board`
