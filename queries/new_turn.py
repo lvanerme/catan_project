@@ -7,17 +7,17 @@ def main():
     cur = conn.cursor()
 
     ##needs to pipeline to take in unique input
-    new_turn(cur, 1, 8)
+    new_turn(cur, 1, 12, 4)
 
     conn.commit()
     cur.close()
 
 
 
-def new_turn(cur, g_id, roll):
+def new_turn(cur, g_id, roll, p_id):
     
     #insert into turn 
-    cur.execute("""INSERT INTO turn (game_id, roll) VALUES(%s, %s)""", (g_id, roll))
+    cur.execute("""INSERT INTO turn (game_id, roll, player_id) VALUES(%s, %s, %s)""", (g_id, roll, p_id))
     return cur
 
 main()
