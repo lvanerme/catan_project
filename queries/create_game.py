@@ -1,6 +1,5 @@
 import random
 
-
 def create_game(cur, conn) -> int:
 
     # insert into game
@@ -24,7 +23,7 @@ def create_game(cur, conn) -> int:
 
     conn.commit()
 
-    return game_id
+    return game_id, board_id
 
 
 def _get_tile_values(board_id) -> list:
@@ -68,7 +67,7 @@ def get_tile(board_id, row, col, tile_numbers: list) -> tuple:
     return tile
 
 
-def _insert_player_values(cur, game_id):
+def _insert_player_values(cur, conn, game_id):
 
     # insert players
     player_values = _get_player_values()
@@ -90,7 +89,7 @@ def _insert_player_values(cur, game_id):
     hand_values = _get_hand_values(player_ids)
     hand_args = ','.join(cur.mogrify("(%s,%s,%s,%s,%s,%s)", i).decode('utf-8') for i in hand_values)
     cur.execute(f"INSERT INTO hand (player_id, brick, wood, wheat, ore, sheep) VALUES {hand_args} RETURNING id")
-
+  
 
 def _get_player_values():
     players = []

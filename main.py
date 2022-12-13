@@ -1,36 +1,51 @@
-# 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
-# Lance's pat for github ^
-
 import psycopg2
+import sys
+
 from queries.create_game import create_game
+from queries.place_initial_pieces import place_initial_pieces
 
-print("Connecting to database...")
-connection = psycopg2.connect("dbname=catan_db user=catan_user password=catan_user port=5432 host=roller.cse.taylor.edu")
-cursor = connection.cursor()
-print("Connected")
+def main():
 
-cursor.execute("SELECT * FROM game")
+    print("Connecting to database...")
+    connection = psycopg2.connect("dbname=catan_db user=catan_user password=catan_user port=5432 host=roller.cse.taylor.edu")
+    cursor = connection.cursor()
+    print("Connected")
 
-print(cursor.fetchall())
+    print()
+    print()
+    print("Welcome to Catan")
+    print("Press enter to create a new game")
 
-#game_id = create_game(cursor, connection)
-# place_initial_pieces()
-# players = get_players(game_id)
+    sys.stdin.readline()
+    game_id, board_id = create_game(cursor, connection)
 
-# player = 0
-# while True:
-#     # take_turn(game_id, players[player])
-    
-#     # if check_win(game_id):
-#         # break
-    
-#     if player != 3:
-#         player += 1
-#     else:
-#         player = 0
+    print(game_id, board_id)
 
-# # get_winner(game_id)
+    print("Game created")
+    print("Press enter to start game")
+    sys.stdin.readline()
 
-cursor.close()
-connection.close()
-print("PostgreSQL connection is closed")
+    place_initial_pieces(cursor, 28, 12)
+
+    # players = get_players(game_id)
+
+    # player = 0
+    # while True:
+    #     # take_turn(game_id, players[player])
+        
+    #     # if check_win(game_id):
+    #         # break
+        
+    #     if player != 3:
+    #         player += 1
+    #     else:
+    #         player = 0
+
+    # # get_winner(game_id)
+
+    cursor.close()
+    connection.close()
+    print("PostgreSQL connection is closed")
+
+
+main()
