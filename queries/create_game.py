@@ -16,11 +16,11 @@ def create_game(cur, conn) -> int:
     tile_args = ','.join(cur.mogrify("(%s,%s,%s,%s,%s)", i).decode('utf-8') for i in tile_values)
     cur.execute(f"INSERT INTO tile (board_id, number, location_row, location_col, robber) VALUES {tile_args}")
 
-    _insert_player_values(cur, game_id)
+    _insert_player_values(cur, conn, game_id)
 
     dev_card_values = _get_dev_card_values(game_id)
-    dev_card_args = ','.join(cur.mogrify("(%s,%s,%s,%s)", i).decode('utf-8') for i in dev_card_values)
-    cur.execute(f"INSERT INTO dev_card (hand_id, type, active, game_id) VALUES {dev_card_args}")
+    dev_card_args = ','.join(cur.mogrify("(%s,%s,%s)", i).decode('utf-8') for i in dev_card_values)
+    cur.execute(f"INSERT INTO dev_card (type, active, game_id) VALUES {dev_card_args}")
 
     conn.commit()
 
@@ -68,7 +68,7 @@ def get_tile(board_id, row, col, tile_numbers: list) -> tuple:
     return tile
 
 
-def _insert_player_values(cur, game_id):
+def _insert_player_values(cur, conn, game_id):
 
     # insert players
     player_values = _get_player_values()
@@ -76,20 +76,28 @@ def _insert_player_values(cur, game_id):
     cur.execute(f"INSERT INTO player (points, winner, longest_road, largest_army) VALUES {player_args} RETURNING id")
     player_ids = cur.fetchall()
 
+    conn.commit()
+
     # insert game_player
     game_player_values = _get_game_player_values(game_id, player_ids)
     game_player_args = ','.join(cur.mogrify("(%s,%s)", i).decode('utf-8') for i in game_player_values)
     cur.execute(f"INSERT INTO game_player VALUES {game_player_args}")
+
+    conn.commit()
 
     # insert piece_count
     piece_count_values = _get_piece_count_values(player_ids)
     piece_count_args = ','.join(cur.mogrify("(%s,%s,%s,%s)", i).decode('utf-8') for i in piece_count_values)
     cur.execute(f"INSERT INTO piece_count (player_id, settlement, city, road) VALUES {piece_count_args}")
 
+    conn.commit()
+
     # insert hands
     hand_values = _get_hand_values(player_ids)
     hand_args = ','.join(cur.mogrify("(%s,%s,%s,%s,%s,%s)", i).decode('utf-8') for i in hand_values)
     cur.execute(f"INSERT INTO hand (player_id, brick, wood, wheat, ore, sheep) VALUES {hand_args} RETURNING id")
+
+    conn.commit()
 
 
 def _get_player_values():
@@ -137,7 +145,7 @@ def _get_dev_card_values(game_id):
     dev_cards = []
 
     for card_type in dev_card_types:
-        card = (-1, card_type, False, game_id)
+        card = (card_type, False, game_id)
         dev_cards.append(card)
 
     return dev_cards
