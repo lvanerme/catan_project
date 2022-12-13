@@ -23,7 +23,7 @@ def create_game(cur, conn) -> int:
 
     conn.commit()
 
-    return game_id
+    return game_id, board_id
 
 
 def _get_tile_values(board_id) -> list:
