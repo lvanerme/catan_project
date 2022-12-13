@@ -1,7 +1,7 @@
 import sys
+import psycopg2
 
 from queries.check_resources import check_resources
-
 
 def insert_piece(cur, conn, player_id, tile_id, piece_type, location) -> bool:
 
@@ -20,11 +20,12 @@ def insert_piece(cur, conn, player_id, tile_id, piece_type, location) -> bool:
     if not valid:
         return False
     
-    cur.execute(f"INSERT INTO piece (player_id, type, location) VALUES ({player_id}, {piece_type}, {location}) RETURNING id")
+    
+    cur.execute(f"INSERT INTO piece (player_id, type, location) VALUES ({player_id}, '{piece_type}', {location}) RETURNING id")
     piece_id = cur.fetchone()[0]
     conn.commit()
 
-    cur.execute(f"INSERT INTO tile_piece VALUES {piece_id}, {tile_id}")
+    cur.execute(f"INSERT INTO tile_piece (piece_id, tile_id) VALUES ({piece_id}, {tile_id})")
     conn.commit()
 
     return True
@@ -55,7 +56,7 @@ def _place_city(cur, hand, city_cnt) -> bool:
     if ore < 3 or wheat < 2:
         return False
 
-    cur.execute(f"UPDATE hand SET ore = {brick - 3}, wheat = {wheat - 2} WHERE hand.player_id = {player_id}")
+    cur.execute(f"UPDATE hand SET ore = {ore - 3}, wheat = {wheat - 2} WHERE hand.player_id = {player_id}")
     cur.execute(f"UPDATE piece_count SET city = city - 1 WHERE piece_count.player_id = {player_id}")
     cur.execute(f"UPDATE player SET points = points + 2 WHERE player.id = {player_id}")
 
@@ -79,17 +80,16 @@ def _place_road(cur, hand, road_cnt) -> bool:
 
 def place_piece(cur, conn, player_id):
   print("Where would you like to place a piece? (row,col)")
-  row, col = sys.stdin.readline()
+  row, col = sys.stdin.readline().split(',')
 
   print("Where on the piece do you want to place it?(0-11)")
   location = sys.stdin.readline()
 
-  cur.execute(f"SELECT tile_id FROM tile WHERE location_row = {row} AND location_col = {col}")
+  cur.execute(f"SELECT id FROM tile WHERE location_row = {row} AND location_col = {col}")
   tile_id = cur.fetchone()[0]
 
   print("What type of piece are you building?(settlement, city, road)")
-  type_var = sys.stdin.readline()
+  type_var = sys.stdin.readline().strip()
 
   return insert_piece(cur, conn, player_id, tile_id, type_var, location)
-
 

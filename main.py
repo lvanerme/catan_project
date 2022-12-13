@@ -81,9 +81,8 @@ def main():
         print(f"Here is your current hand: \n\t brick:{current_hand[2]} \n\t wood:{current_hand[3]} \n\t wheat:{current_hand[4]} \n\t ore:{current_hand[5]} \n\t sheep:{current_hand[6]} ")
         
         print("What would you like to do? \n Place Piece = 0 \t Buy Dev Card = 1 \t End turn = 2")
-        move = sys.stdin.readline()
+        move = sys.stdin.readline().strip()
 
-        print(move, type(move))
         if move == '0':
           success = place_piece(cursor, connection, player_id)
 
@@ -92,7 +91,8 @@ def main():
             continue
           print("Piece placed")
         elif move == '1':
-          dev_card = buy_dev_card(cursor, player_id, game_id)
+          print(current_hand[0])
+          dev_card = buy_dev_card(cursor, connection, player_id, game_id, current_hand[0])
 
           if not dev_card:
             print("Card could not be bought")
