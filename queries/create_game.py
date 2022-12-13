@@ -1,5 +1,6 @@
 import random
 
+
 def create_game(cur, conn) -> int:
 
     # insert into game
@@ -28,43 +29,62 @@ def create_game(cur, conn) -> int:
 
 def _get_tile_values(board_id) -> list:
     tile_numbers = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12, -1]
+    tile_types = ['brick', 'brick', 'brick', 'ore', 'ore', 'ore', 'wheat', 'wheat', 'wheat', 'wheat', 'wood', 'wood', 'wood', 'wood', 'sheep', 'sheep', 'sheep', 'sheep']
     tiles = []
 
     for col in range(0, 3):
-        tile = get_tile(board_id, 0, col, tile_numbers)
+        tile = get_tile(board_id, 0, col, tile_numbers, tile_types)
+
         tile_numbers.remove(tile[1])
+        if tile[-1] == True:
+            tile_types.remove(tile[2])
         tiles.append(tile)
 
     for col in range(0, 4):
-        tile = get_tile(board_id, 1, col, tile_numbers)
+        tile = get_tile(board_id, 1, col, tile_numbers, tile_types)
+
         tile_numbers.remove(tile[1])
+        if tile[-1] == True:
+            tile_types.remove(tile[2])
         tiles.append(tile)
 
     for col in range(0, 5):
-        tile = get_tile(board_id, 2, col, tile_numbers)
-        tile_numbers.remove(tile[1])       
+        tile = get_tile(board_id, 2, col, tile_numbers, tile_types)
+
+        tile_numbers.remove(tile[1])
+        if tile[-1] == True:
+            tile_types.remove(tile[2])       
         tiles.append(tile)
 
     for col in range(0, 4):
-        tile = get_tile(board_id, 3, col, tile_numbers)
+        tile = get_tile(board_id, 3, col, tile_numbers, tile_types)
+
         tile_numbers.remove(tile[1])        
+        if tile[-1] == True:
+            tile_types.remove(tile[2])
         tiles.append(tile)
 
     for col in range(0, 3):
-        tile = get_tile(board_id, 4, col, tile_numbers)
+        tile = get_tile(board_id, 4, col, tile_numbers, tile_types)
+
         tile_numbers.remove(tile[1]) 
+        if tile[-1] == True:
+            tile_types.remove(tile[2])
         tiles.append(tile)
 
     return tiles
 
 
-def get_tile(board_id, row, col, tile_numbers: list) -> tuple:
+def get_tile(board_id, row, col, tile_numbers: list, tile_types: list) -> tuple:
     num = random.choice(tile_numbers)
 
-    robber = True if num == -1 else False
-    tile = (board_id, num, row, col, robber)
+    robber = False
+    if num == -1:
+        robber = True
+        return (board_id, num, 'desert', row, col, robber)
 
-    return tile
+    tile_type = random.choice(tile_types)
+    return (board_id, num, tile_type, row, col, robber)
 
 
 def _insert_player_values(cur, conn, game_id):
