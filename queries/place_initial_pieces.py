@@ -27,7 +27,7 @@ def execute_queries(cursor, player, game_id, board_id):
   cursor.execute("INSERT INTO piece (player_id, type, location) VALUES (%s, %s, %s) RETURNING id", (player, "settlement", settlement_location_on_tile))
   piece_id = cursor.fetchone()[0]
 
-  cursor.execute(f"INSERT INTO tile_pieces (piece_id, tile_id) VALUES ({piece_id}, {tile_id})")
+  cursor.execute(f"INSERT INTO tile_piece (piece_id, tile_id) VALUES ({piece_id}, {tile_id})")
 
   print("Enter tile row and col for road placement (row, col):")
   row, col = sys.stdin.readline().split(',')
@@ -39,7 +39,7 @@ def execute_queries(cursor, player, game_id, board_id):
   cursor.execute("INSERT INTO piece (player_id, type, location) VALUES (%s, %s, %s) RETURNING id", (player, "road", road_location_on_tile))
   piece_id = cursor.fetchone()[0]
 
-  cursor.execute(f"INSERT INTO tile_pieces (piece_id, tile_id) VALUES ({piece_id}, {tile_id})")
+  cursor.execute(f"INSERT INTO tile_piece (piece_id, tile_id) VALUES ({piece_id}, {tile_id})")
 
 
 
