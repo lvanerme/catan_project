@@ -15,44 +15,21 @@ def main():
 
 
 
-def get_resources(cur, c2, g_id, roll):
-    cur.execute("""SELECT tile.number, tile.type, piece.type, piece.player_id, tile.robber, board.game_id FROM board INNER JOIN tile ON board.id = 
-    tile.board_id INNER JOIN tile_pieces ON tile.id = tile_pieces.tile_id INNER JOIN piece ON piece.id = tile_pieces.piece_id WHERE tile.number = %s AND board.game_id = %s""", (roll, g_id, ))
-    tile = cur.fetchone()
-    while tile != None:
-        result = str(tile)
-        result = result[1:len(result)-1]
-        result = str(result).split(', ')
-        resource = result[1]
-        resource = resource[1:len(resource)-1]
-        placement = result[2]
-        placement = placement[1:len(placement)-1]
-        player = result[3]
-        robber = result[4]
-        if robber == 'False':
-            if placement == 'settlement':
-                if resource == 'wood':
-                    c2.execute("""UPDATE hand SET wood = wood + 1 WHERE hand.player_id = %s""", (player,))
-                if resource == 'brick':
-                    c2.execute("""UPDATE hand SET brick = brick + 1 WHERE hand.player_id = %s""", (player,))
-                if resource == 'ore':
-                    c2.execute("""UPDATE hand SET ore = ore + 1 WHERE hand.player_id = %s""", (player,))
-                if resource == 'sheep':
-                    c2.execute("""UPDATE hand SET sheep = sheep + 1 WHERE hand.player_id = %s""", (player,))
-                if resource == 'wheat':
-                    c2.execute("""UPDATE hand SET wheat = wheat + 1 WHERE hand.player_id = %s""", (player,))
-            if placement == 'city':
-                if resource == 'wood':
-                    c2.execute("""UPDATE hand SET wood = wood + 2 WHERE hand.player_id = %s""", (player,))
-                if resource == 'brick':
-                    c2.execute("""UPDATE hand SET brick = brick + 2 WHERE hand.player_id = %s""", (player,))
-                if resource == 'ore':
-                    c2.execute("""UPDATE hand SET ore = ore + 2 WHERE hand.player_id = %s""", (player,))
-                if resource == 'sheep':
-                    c2.execute("""UPDATE hand SET sheep = sheep + 2 WHERE hand.player_id = %s""", (player,))
-                if resource == 'wheat':
-                    c2.execute("""UPDATE hand SET wheat = wheat + 2 WHERE hand.player_id = %s""", (player,))
-        tile = cur.fetchone()
+def get_resources(cur, conn, game_id, roll):
+    cur.execute(f"""SELECT tile.number, tile.type, piece.type, piece.player_id, tile.robber, board.game_id FROM board INNER JOIN tile ON board.id = 
+    tile.board_id INNER JOIN tile_pieces ON tile.id = tile_pieces.tile_id INNER JOIN piece ON piece.id = tile_pieces.piece_id WHERE tile.number = {roll} AND board.game_id = {game_id}""")
+    tiles = cur.fetchall()
+    
+    for tile in tiles:
+        (number, tile_type, piece_type, player_id, robber, game_id) = tile
+        if robber:
+            continue
+
+        num = 1 if piece_type == 'settlement' else 2
+
+        cur.execute(f"SELECT {tile_type} FROM hand WHERE player_id = {player_id}")
+        num_of_resource = cur.fetchone()[0]
+        cur.execute(f"UPDATE hand set {tile_type} = {num_of_resource + num} WHERE hand.player_id = {player_id}")
 
 
 main()
