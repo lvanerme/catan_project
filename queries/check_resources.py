@@ -8,7 +8,6 @@ def main():
     
     ##needs to pipeline to take in unique input
     resources = check_resources(cur, 1)
-    print(resources)
     
     conn.commit()
     cur.close()
