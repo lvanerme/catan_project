@@ -1,7 +1,9 @@
+import sys
+
 from queries.check_resources import check_resources
 
 
-def place_piece(cur, conn, player_id, tile_id, piece_type, location) -> bool:
+def insert_piece(cur, conn, player_id, tile_id, piece_type, location) -> bool:
 
     hand = check_resources(cur, player_id)
     cur.execute(f"SELECT * FROM piece_count WHERE player_id = {player_id}")
@@ -73,3 +75,21 @@ def _place_road(cur, hand, road_cnt) -> bool:
     cur.execute(f"UPDATE piece_count SET road = road - 1 WHERE piece_count.player_id = {player_id}")
 
     return True
+
+
+def place_piece(cur, conn, player_id):
+  print("Where would you like to place a piece? (row,col)")
+  row, col = sys.stdin.readline()
+
+  print("Where on the piece do you want to place it?(0-11)")
+  location = sys.stdin.readline()
+
+  cur.execute(f"SELECT tile_id FROM tile WHERE location_row = {row} AND location_col = {col}")
+  tile_id = cur.fetchone()[0]
+
+  print("What type of piece are you building?(settlement, city, road)")
+  type_var = sys.stdin.readline()
+
+  return insert_piece(cur, conn, player_id, tile_id, type_var, location)
+
+

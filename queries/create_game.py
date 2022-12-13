@@ -13,8 +13,8 @@ def create_game(cur, conn) -> int:
 
     # insert tiles
     tile_values = _get_tile_values(board_id)
-    tile_args = ','.join(cur.mogrify("(%s,%s,%s,%s,%s)", i).decode('utf-8') for i in tile_values)
-    cur.execute(f"INSERT INTO tile (board_id, number, location_row, location_col, robber) VALUES {tile_args}")
+    tile_args = ','.join(cur.mogrify("(%s,%s,%s,%s,%s,%s)", i).decode('utf-8') for i in tile_values)
+    cur.execute(f"INSERT INTO tile (board_id, number, type, location_row, location_col, robber) VALUES {tile_args}")
 
     _insert_player_values(cur, conn, game_id)
 
@@ -36,7 +36,7 @@ def _get_tile_values(board_id) -> list:
         tile = get_tile(board_id, 0, col, tile_numbers, tile_types)
 
         tile_numbers.remove(tile[1])
-        if tile[-1] == True:
+        if tile[2] != 'desert':
             tile_types.remove(tile[2])
         tiles.append(tile)
 
@@ -44,7 +44,7 @@ def _get_tile_values(board_id) -> list:
         tile = get_tile(board_id, 1, col, tile_numbers, tile_types)
 
         tile_numbers.remove(tile[1])
-        if tile[-1] == True:
+        if tile[2] != 'desert':
             tile_types.remove(tile[2])
         tiles.append(tile)
 
@@ -52,15 +52,15 @@ def _get_tile_values(board_id) -> list:
         tile = get_tile(board_id, 2, col, tile_numbers, tile_types)
 
         tile_numbers.remove(tile[1])
-        if tile[-1] == True:
+        if tile[2] != 'desert':
             tile_types.remove(tile[2])       
         tiles.append(tile)
 
     for col in range(0, 4):
         tile = get_tile(board_id, 3, col, tile_numbers, tile_types)
-
+        
         tile_numbers.remove(tile[1])        
-        if tile[-1] == True:
+        if tile[2] != 'desert':
             tile_types.remove(tile[2])
         tiles.append(tile)
 
@@ -68,7 +68,7 @@ def _get_tile_values(board_id) -> list:
         tile = get_tile(board_id, 4, col, tile_numbers, tile_types)
 
         tile_numbers.remove(tile[1]) 
-        if tile[-1] == True:
+        if tile[2] != 'desert':
             tile_types.remove(tile[2])
         tiles.append(tile)
 

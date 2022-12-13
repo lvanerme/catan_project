@@ -1,31 +1,27 @@
 import random
-import psycopg2
-from check_resources import check_resources
 
 
-def buy_dev_card(cur, conn, player_id, game_id) -> bool:
+def buy_dev_card(cur, player_id, game_id):
 
-    (hand_id, player_id, brick, wood, wheat, ore, sheep) = check_resources(cur, player_id)
+    # get hand values
+    cur.execute(f"SELECT * FROM hand WHERE player_id = {player_id}")
+    (id, player_id, brick, wood, wheat, ore, sheep) = cur.fetchone()
 
     if wheat < 1 or ore < 1 or sheep < 1:
         return False
 
-    cur.execute(f"SELECT * FROM dev_card WHERE game_id = {game_id} AND hand_id IS NULL")
+    # get dev_cards
+    cur.execute(f"SELECT * FROM dev_card WHERE game_id = {game_id} AND hand_id = -1")
     dev_cards = list(cur.fetchall())
 
-    if len(dev_cards) < 1:
+    if len(dev_cards) == 0:
         return False
 
-    card = random.choice(dev_cards)
+    # update selected card with hand_id
+    dev_card = random.choice(dev_cards)
+    cur.execute(f"UPDATE dev_card SET hand_id = {dev_card[1]} WHERE id = {dev_card[0]}")
 
-    cur.execute(f"UPDATE hand SET wheat = {wheat - 1}, ore = {ore - 1}, sheep = {sheep - 1} WHERE hand.player_id = {player_id}")
-    cur.execute(f"UPDATE dev_card SET hand_id = {hand_id} WHERE id = {card[0]}")
-    conn.commit()
+    return dev_card
 
-    return True
+    
 
-
-connection = psycopg2.connect("dbname=catan_db user=catan_user password=catan_user port=5432 host=roller.cse.taylor.edu")
-cursor = connection.cursor()
-
-buy_dev_card(cursor, connection, 1, 44)

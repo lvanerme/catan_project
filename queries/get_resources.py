@@ -1,10 +1,9 @@
 def get_resources(cur, conn, game_id, roll):
     cur.execute(f"""SELECT tile.number, tile.type, piece.type, piece.player_id, tile.robber, board.game_id FROM board INNER JOIN tile ON board.id = 
-    tile.board_id INNER JOIN tile_pieces ON tile.id = tile_pieces.tile_id INNER JOIN piece ON piece.id = tile_pieces.piece_id WHERE tile.number = {roll} AND board.game_id = {game_id}""")
+    tile.board_id INNER JOIN tile_piece ON tile.id = tile_piece.tile_id INNER JOIN piece ON piece.id = tile_piece.piece_id WHERE tile.number = {roll} AND board.game_id = {game_id}""")
     tiles = cur.fetchall()
     
     for tile in tiles:
-        print(tile)
         (number, tile_type, piece_type, player_id, robber, game_id) = tile
         if robber:
             continue
