@@ -1,15 +1,16 @@
 import sys
 from queries.get_players import get_players
 
-def place_initial_pieces(cursor, game_id, board_id):
+def place_initial_pieces(cursor, conn, game_id, board_id):
   players = get_players(cursor, game_id)
-  print(players)
 
   for player_id in players:
     execute_queries(cursor, player_id[0], game_id, board_id)
   
   for player_id in reversed(players):
     execute_queries(cursor, player_id[0], game_id, board_id)
+
+  conn.commit()
 
 
 def execute_queries(cursor, player, game_id, board_id):

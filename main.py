@@ -6,26 +6,20 @@ from queries.place_initial_pieces import place_initial_pieces
 
 def main():
 
-    print("Connecting to database...")
     connection = psycopg2.connect("dbname=catan_db user=catan_user password=catan_user port=5432 host=roller.cse.taylor.edu")
     cursor = connection.cursor()
-    print("Connected")
 
-    print()
-    print()
     print("Welcome to Catan")
     print("Press enter to create a new game")
 
     sys.stdin.readline()
-    game_id, board_id = create_game(cursor, connection)
-
-    print(game_id, board_id)
+    game_id = create_game(cursor, connection)
 
     print("Game created")
     print("Press enter to start game")
     sys.stdin.readline()
 
-    place_initial_pieces(cursor, 28, 12)
+    place_initial_pieces(cursor, connection, 28, 12)
 
     # players = get_players(game_id)
 
