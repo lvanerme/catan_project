@@ -1,4 +1,3 @@
-
 def get_resources(cur, conn, game_id, roll):
     cur.execute(f"""SELECT tile.number, tile.type, piece.type, piece.player_id, tile.robber, board.game_id FROM board INNER JOIN tile ON board.id = 
     tile.board_id INNER JOIN tile_pieces ON tile.id = tile_pieces.tile_id INNER JOIN piece ON piece.id = tile_pieces.piece_id WHERE tile.number = {roll} AND board.game_id = {game_id}""")
