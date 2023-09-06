@@ -1,4 +1,4 @@
-# Queeeeeer(ies)
+# Queries
 
 ## Game Setup
 1. `create_game()`
